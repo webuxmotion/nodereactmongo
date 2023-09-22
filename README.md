@@ -47,3 +47,40 @@ docker stop todo-app
 docker build -t todoapp .
 docker run --rm --name todo-app todoapp
 ```
+
+### Docker Networks
+```
+docker network ls
+docker network create todo-net
+docker stop mongodb 
+docker stop todo-app
+docker run --network todo-net --name mongodb -d --rm mongo
+```
+mongodb connection url:
+`mongodb://mongodb:27017/todos-app`
+```
+docker build -t todoapp .
+docker run --rm --network todo-net --name todo-app todoapp
+```
+
+## Dockerizing React App
+Dockerfile:
+```
+FROM node:alpine
+WORKDIR /app
+COPY package.json .
+RUN npm install
+COPY . .
+EXPOSE 3000
+CMD ["npm", "run", "start"]
+```
+
+```
+docker build -t frontend .
+docker run --name frontend-todo -p 3000:3000 --rm -it frontend
+```
+
+Rerun todo-app with port mapping:
+```
+docker run --rm --network todo-net -p 8000:8000 --name todo-app todoapp
+```

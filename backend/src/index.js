@@ -45,7 +45,7 @@ app.delete("/todos/:id", async (req, res) => {
 });
 mongoose.set("strictQuery", false);
 mongoose.connect(
-  "mongodb://host.docker.internal:27017/todos-app",
+  "mongodb://mongodb:27017/todos-app",
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
