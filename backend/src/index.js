@@ -43,9 +43,9 @@ app.delete("/todos/:id", async (req, res) => {
 
   return res.status(201).json({ message: "Todo deleted" });
 });
-
+mongoose.set("strictQuery", false);
 mongoose.connect(
-  "MONGO-URI",
+  "mongodb://host.docker.internal:27017/todos-app",
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
