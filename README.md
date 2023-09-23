@@ -160,4 +160,43 @@ Send JSON to POST localhost:8000/todos to check the backend:
     "name": "another todo"
 }
 ```
+### Configuration for mongo + backend + frontend
+Update docker-compose.yaml file:
+```
+version: "3.8"
+services:
+  mongodb:
+    image: mongo
+    volumes:
+      - mongodbdata:/data/db
+    env_file:
+      - ./mongo/.env
+    container_name: mongodb
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./backend/src:/app/src
+    ports:
+      - 8000:8000
+    env_file:
+      - ./backend/.env
+    depends_on: 
+      - mongodb
+    container_name: backend
+  frontend:
+    build: ./frontend
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+    ports:
+      - 3000:3000
+    stdin_open: true
+    tty: true
+    depends_on:
+      - backend
 
+volumes:
+  mongodbdata:
+```
