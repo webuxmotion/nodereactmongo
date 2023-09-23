@@ -84,3 +84,12 @@ Rerun todo-app with port mapping:
 ```
 docker run --rm --network todo-net -p 8000:8000 --name todo-app todoapp
 ```
+
+### Optimizing Our Workflow with Volumes
+```
+docker run --name frontend-todo -p 3000:3000 -v $(pwd)/src:/app/src -v $(pwd)/public:/app/public --rm -it frontend
+
+docker run --name mongodb --network todo-net -v data:/data/db mongo
+
+docker run --name todo-app --rm -p 8000:8000 --network todo-net -v $(pwd)/src:/app/src todoapp
+```
