@@ -93,3 +93,27 @@ docker run --name mongodb --network todo-net -v data:/data/db mongo
 
 docker run --name todo-app --rm -p 8000:8000 --network todo-net -v $(pwd)/src:/app/src todoapp
 ```
+
+## Use docker-compose
+### Configuration for mongodb container
+Create docker-compose.yaml file:
+```
+version: "3.8"
+services:
+  mongodb:
+    image: mongo
+    volumes:
+      - mongodbdata:/data/db
+    env_file:
+      - ./mongo/.env
+    container_name: mongodb
+
+volumes:
+  mongodbdata:
+```
+Create .env file:
+```
+MONGO_INITDB_ROOT_USERNAME=root
+MONGO_INITDB_ROOT_PASSWORD=password
+```
+Command to start container: `docker-compose up`
