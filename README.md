@@ -111,9 +111,53 @@ services:
 volumes:
   mongodbdata:
 ```
-Create .env file:
+Create ./mongo/.env file:
 ```
-MONGO_INITDB_ROOT_USERNAME=root
-MONGO_INITDB_ROOT_PASSWORD=password
+MONGO_INITDB_ROOT_USERNAME=mymongoadmin
+MONGO_INITDB_ROOT_PASSWORD=mysecretpassword
 ```
 Command to start container: `docker-compose up`
+### Configuration for mongo + backend
+Update docker-compose.yaml file:
+```
+version: "3.8"
+services:
+  mongodb:
+    image: mongo
+    volumes:
+      - mongodbdata:/data/db
+    env_file:
+      - ./mongo/.env
+    container_name: mongodb
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./backend/src:/app/src
+    ports:
+      - 8000:8000
+    env_file:
+      - ./backend/.env
+    depends_on: 
+      - mongodb
+    container_name: backend
+
+volumes:
+  mongodbdata:
+```
+Create ./backend/.env file:
+```
+MONGODB_USERNAME=mymongoadmin
+MONGODB_PASSWORD=mysecretpassword
+```
+Update connection url in ./backend/src/index.js
+``mongodb://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@mongodb:27017/todos-app?authSource=admin``
+
+Send JSON to POST localhost:8000/todos to check the backend:
+```
+{
+    "name": "another todo"
+}
+```
+
