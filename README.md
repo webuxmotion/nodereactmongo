@@ -200,3 +200,28 @@ services:
 volumes:
   mongodbdata:
 ```
+
+## Production dockerfile for frontend app
+Create file ./frontend/Dockerfile.prod:
+```
+FROM node:18-alpine as builder
+
+WORKDIR /app
+
+COPY package.json .
+
+RUN npm install
+
+COPY . .
+
+RUN npm run build
+
+FROM nginx
+
+COPY --from=builder /app/build /usr/share/nginx/html
+```
+Build image in frontend folder:
+`docker build -t nginxfrontend . -f Dockerfile.prod`
+
+Run container:
+`docker run -p 80:80 nginxfrontend`
